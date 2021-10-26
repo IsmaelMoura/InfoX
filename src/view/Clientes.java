@@ -18,11 +18,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JDesktopPane;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import Atxy2k.CustomTextField.RestrictedTextField;
 import model.DAO;
 import net.proteanit.sql.DbUtils;
 
@@ -106,11 +108,11 @@ public class Clientes extends JDialog {
 		JDesktopPane desktopPane = new JDesktopPane();
 		desktopPane.setBounds(20, 61, 725, 130);
 		getContentPane().add(desktopPane);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 0, 725, 130);
 		desktopPane.add(scrollPane);
-		
+
 		table = new JTable();
 		scrollPane.setViewportView(table);
 
@@ -119,6 +121,7 @@ public class Clientes extends JDialog {
 		getContentPane().add(lblNewLabel_2);
 
 		txtIdCli = new JTextField();
+		txtIdCli.setEditable(false);
 		txtIdCli.setBounds(40, 207, 50, 20);
 		getContentPane().add(txtIdCli);
 		txtIdCli.setColumns(10);
@@ -211,6 +214,7 @@ public class Clientes extends JDialog {
 		getContentPane().add(lblNewLabel_11);
 
 		cboUf = new JComboBox();
+		cboUf.setEditable(true);
 		cboUf.setModel(new DefaultComboBoxModel(
 				new String[] { "", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
 						"PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
@@ -223,26 +227,56 @@ public class Clientes extends JDialog {
 		getContentPane().add(txtBairro);
 
 		JButton btnAdicionar = new JButton("");
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				adicionarCliente();
+			}
+		});
 		btnAdicionar.setToolTipText("Adicionar");
 		btnAdicionar.setIcon(new ImageIcon(Clientes.class.getResource("/img/create.png")));
 		btnAdicionar.setBounds(20, 342, 70, 70);
 		getContentPane().add(btnAdicionar);
 
 		JButton btnEditar = new JButton("");
+		btnEditar.setEnabled(false);
 		btnEditar.setIcon(new ImageIcon(Clientes.class.getResource("/img/update.png")));
 		btnEditar.setToolTipText("Editar");
 		btnEditar.setBounds(100, 342, 70, 70);
 		getContentPane().add(btnEditar);
 
 		JButton btnExcluir = new JButton("");
+		btnExcluir.setEnabled(false);
 		btnExcluir.setIcon(new ImageIcon(Clientes.class.getResource("/img/delete.png")));
 		btnExcluir.setToolTipText("Excluir");
 		btnExcluir.setBounds(180, 342, 70, 70);
 		getContentPane().add(btnExcluir);
-		
+
 		lblStatus = new JLabel("");
 		lblStatus.setBounds(287, 237, 32, 32);
 		getContentPane().add(lblStatus);
+		
+		
+		// uso da biblioteca Atxy2k para validações
+				RestrictedTextField nome = new RestrictedTextField(this.txtNomeCli);
+				nome.setLimit(50);
+				RestrictedTextField cep = new RestrictedTextField(this.txtCep);
+				cep.setLimit(8);
+				cep.setOnlyNums(true);
+				RestrictedTextField endereco = new RestrictedTextField(this.txtEndereco);
+				endereco.setLimit(50);
+				RestrictedTextField numero = new RestrictedTextField (this.txtNumero);
+				numero.setLimit(12);
+				numero.setOnlyNums(true);
+				RestrictedTextField complemento = new RestrictedTextField (this.txtComplemento);
+				complemento.setLimit(30);
+				RestrictedTextField bairro = new RestrictedTextField (this.txtBairro);
+				bairro.setLimit(50);
+				RestrictedTextField cidade = new RestrictedTextField (this.txtCidade);
+				cidade.setLimit(50);
+				RestrictedTextField fone = new RestrictedTextField (this.txtFoneCli);
+				fone.setLimit(15);
+				
+				
 	}// end of the constructor
 
 	/**
@@ -284,14 +318,15 @@ public class Clientes extends JDialog {
 					}
 				}
 			}
-			
+
 			txtEndereco.setText(tipoLogradouro + " " + logradouro);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}// end of the buscarCep()
-	
+
 	DAO dao = new DAO();
+
 	private void pesquisarCliente() {
 		String read = "select idcli as ID, nome as Cliente, fone as Fone, cep as CEP, endereco as Endereço, numero as Número, complemento as Complemento, bairro as Bairro, cidade as Cidade, uf as UF from clientes where nome like ?";
 		try {
@@ -305,6 +340,85 @@ public class Clientes extends JDialog {
 		}
 	}// end of the pesquisarCliente()
 	
+	/**
+	 * método responsável por adicionar um cliente no banco
+	 */
+	private void adicionarCliente() {
+		// validação de campos obrigatórios
+		if (txtNomeCli.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo nome", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtNomeCli.requestFocus();
+		} else if (txtFoneCli.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo fone", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtFoneCli.requestFocus();
+		} else if (txtEndereco.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo endereço", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtEndereco.requestFocus();
+		} else if (txtNumero.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo número", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtNumero.requestFocus();
+		} else if (txtComplemento.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo complemento", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtComplemento.requestFocus();
+		} else if (txtBairro.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo bairro", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtBairro.requestFocus();
+		} else if (txtCidade.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Cidade", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			txtCidade.requestFocus();
+		} else if (cboUf.getSelectedItem().equals("")){
+			JOptionPane.showMessageDialog(null, "Preencha o campo UF", "Atenção !", JOptionPane.WARNING_MESSAGE);
+			cboUf.requestFocus();
+		} else {
+		
+			// inserir o cliente no banco
+			String create = "insert into clientes (nome,cep,endereco,numero,complemento,bairro,cidade,uf,fone) values (?,?,?,?,?,?,?,?,?)";
+			try {
+				Connection con = dao.conectar();
+				PreparedStatement pst = con.prepareStatement(create);
+				pst.setString(1, txtNomeCli.getText());
+				pst.setString(2, txtCep.getText());
+				pst.setString(3, txtEndereco.getText());
+				pst.setString(4, txtNumero.getText());
+				pst.setString(5, txtComplemento.getText());
+				pst.setString(6, txtBairro.getText());
+				pst.setString(7, txtCidade.getText());
+				pst.setString(8, cboUf.getSelectedItem().toString());
+				pst.setString(9, txtFoneCli.getText());
+				
+				// criando uma variavel que irá executar a query e receber o valor 1 em caso
+				// positivo (inserção do cliente no banco)
+				int confirma = pst.executeUpdate();
+				if (confirma == 1) {
+					JOptionPane.showMessageDialog(null, "Cliente incluido com sucesso", "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+					con.close();
+					limpar();
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+	}// fim do método adicionarCliente()
 	
+	/**
+	 * Limpar os campos
+	 */
+	
+	private void limpar() {
+		// limpar campos
+		txtPesquisar.setText(null);
+		txtIdCli.setText(null);
+		txtNomeCli.setText(null);
+		txtCep.setText(null);
+		txtEndereco.setText(null);
+		txtNumero.setText(null);
+		txtComplemento.setText(null);
+		txtBairro.setText(null);
+		txtCidade.setText(null);
+		cboUf.setSelectedItem(null);
+		txtFoneCli.setText(null);
+		// limpar tabela
+		((DefaultTableModel) table.getModel()).setRowCount(0);
+	}
 
 }
