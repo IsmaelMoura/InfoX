@@ -37,6 +37,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 @SuppressWarnings({ "serial", "unused" })
 public class Clientes extends JDialog {
@@ -114,6 +116,12 @@ public class Clientes extends JDialog {
 		desktopPane.add(scrollPane);
 
 		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setarCampos();
+			}
+		});
 		scrollPane.setViewportView(table);
 
 		JLabel lblNewLabel_2 = new JLabel("ID");
@@ -226,7 +234,7 @@ public class Clientes extends JDialog {
 		txtBairro.setBounds(86, 311, 221, 20);
 		getContentPane().add(txtBairro);
 
-		JButton btnAdicionar = new JButton("");
+		btnAdicionar = new JButton("");
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				adicionarCliente();
@@ -237,14 +245,14 @@ public class Clientes extends JDialog {
 		btnAdicionar.setBounds(20, 342, 70, 70);
 		getContentPane().add(btnAdicionar);
 
-		JButton btnEditar = new JButton("");
+		btnEditar = new JButton("");
 		btnEditar.setEnabled(false);
 		btnEditar.setIcon(new ImageIcon(Clientes.class.getResource("/img/update.png")));
 		btnEditar.setToolTipText("Editar");
 		btnEditar.setBounds(100, 342, 70, 70);
 		getContentPane().add(btnEditar);
 
-		JButton btnExcluir = new JButton("");
+		btnExcluir = new JButton("");
 		btnExcluir.setEnabled(false);
 		btnExcluir.setIcon(new ImageIcon(Clientes.class.getResource("/img/delete.png")));
 		btnExcluir.setToolTipText("Excluir");
@@ -274,6 +282,15 @@ public class Clientes extends JDialog {
 				RestrictedTextField cidade = new RestrictedTextField (this.txtCidade);
 				cidade.setLimit(50);
 				RestrictedTextField fone = new RestrictedTextField (this.txtFoneCli);
+				
+				JButton btnLimpar = new JButton("Limpar");
+				btnLimpar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						limpar();
+					}
+				});
+				btnLimpar.setBounds(656, 366, 89, 23);
+				getContentPane().add(btnLimpar);
 				fone.setLimit(15);
 				
 				
@@ -326,6 +343,9 @@ public class Clientes extends JDialog {
 	}// end of the buscarCep()
 
 	DAO dao = new DAO();
+	private JButton btnAdicionar;
+	private JButton btnEditar;
+	private JButton btnExcluir;
 
 	private void pesquisarCliente() {
 		String read = "select idcli as ID, nome as Cliente, fone as Fone, cep as CEP, endereco as Endereço, numero as Número, complemento as Complemento, bairro as Bairro, cidade as Cidade, uf as UF from clientes where nome like ?";
@@ -401,6 +421,30 @@ public class Clientes extends JDialog {
 	}// fim do método adicionarCliente()
 	
 	/**
+	 * metodo e responsavel por setar os campos da tabela no formulario
+	 */
+	private void setarCampos() {
+		// a linha abaixo obtem o conteudo da linha da tabela
+		// int (indice = colunas) [0] [1] [2] [3] [4]....
+		int setar = table.getSelectedRow();
+		// setar os campos
+		txtIdCli.setText(table.getModel().getValueAt(setar, 0).toString());
+		txtNomeCli.setText(table.getModel().getValueAt(setar, 1).toString());
+		txtFoneCli.setText(table.getModel().getValueAt(setar, 2).toString());
+		txtCep.setText(table.getModel().getValueAt(setar, 3).toString());
+		txtEndereco.setText(table.getModel().getValueAt(setar, 4).toString());
+		txtNumero.setText(table.getModel().getValueAt(setar, 5).toString());
+		txtComplemento.setText(table.getModel().getValueAt(setar, 6).toString());
+		txtBairro.setText(table.getModel().getValueAt(setar, 7).toString());
+		txtCidade.setText(table.getModel().getValueAt(setar, 8).toString());
+		cboUf.setSelectedItem(table.getModel().getValueAt(setar, 9).toString());
+		// gerenciar os botoes
+		btnAdicionar.setEnabled(false);
+		btnEditar.setEnabled(true);
+		btnExcluir.setEnabled(true);
+	}// fim do metodo setarCampos()
+	
+	/**
 	 * Limpar os campos
 	 */
 	
@@ -419,6 +463,8 @@ public class Clientes extends JDialog {
 		txtFoneCli.setText(null);
 		// limpar tabela
 		((DefaultTableModel) table.getModel()).setRowCount(0);
+		btnAdicionar.setEnabled(true);
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
 	}
-
 }
