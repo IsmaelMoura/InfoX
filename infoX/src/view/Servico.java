@@ -87,7 +87,12 @@ public class Servico extends JDialog {
 			}
 		}
 	}// fim do construtor
+
 	DAO dao = new DAO();
+
+	/**
+	 * Método responsável por pesquisar o cliente no banco dedos
+	 */
 	private void pesquisarCliente() {
 		String read = "select idcli as ID, nome as Cliente, fone as Fone, cep as CEP, endereco as Endereço, numero as Número, complemento as Complemento, bairro as Bairro, cidade as Cidade, uf as UF from clientes where nome like ?";
 		try {

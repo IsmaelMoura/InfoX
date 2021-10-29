@@ -189,7 +189,8 @@ public class Usuarios extends JDialog {
 		cboPerfil.setModel(new DefaultComboBoxModel(new String[] { "", "administrador", "operador" }));
 		cboPerfil.setBounds(436, 166, 132, 22);
 		getContentPane().add(cboPerfil);
-		
+
+		// Uso da biblioteca Atxy2k para validações
 		RestrictedTextField usuario = new RestrictedTextField(txtUsuario);
 		usuario.setLimit(50);
 		RestrictedTextField login = new RestrictedTextField(txtLogin);
@@ -225,7 +226,7 @@ public class Usuarios extends JDialog {
 	}// end of the pesquisarUsuario()
 
 	/**
-	 * metodo e responsavel por setar os campos da tabela no formulario
+	 * Método e responsável por setar os campos da tabela no formulario
 	 */
 	private void setarCampos() {
 		// a linha abaixo obtem o conteudo da linha da tabela
@@ -243,7 +244,7 @@ public class Usuarios extends JDialog {
 	}// fim do metodo setarCampos()
 
 	/**
-	 * metodo especifico para setar a senha
+	 * Método responsável por setar a senha no campo txtSenha
 	 */
 	private void setarSenha() {
 		String read2 = "select senha from usuarios where id=?";
@@ -314,7 +315,7 @@ public class Usuarios extends JDialog {
 	}// fim do método adicionarUsuario()
 
 	/**
-	 * metodo responsavel pela edicao dos dados do cliente
+	 * Método responsável por editar os dados do cliente no banco de dados
 	 */
 	private void editarUsuario() {
 		// validação de campos obrigatórios
@@ -390,7 +391,7 @@ public class Usuarios extends JDialog {
 	}// fim do método excluirUsuario();
 
 	/**
-	 * metodo responsavel por limpar os campos e gerenciar os botoes
+	 * Método responsável por zerar todos os campos
 	 */
 	private void limpar() {
 		// limpar campos

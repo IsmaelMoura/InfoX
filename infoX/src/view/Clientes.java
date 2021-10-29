@@ -273,6 +273,15 @@ public class Clientes extends JDialog {
 		lblStatus.setBounds(287, 237, 32, 32);
 		getContentPane().add(lblStatus);
 
+		JButton btnLimpar = new JButton("Limpar");
+		btnLimpar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpar();
+			}
+		});
+		btnLimpar.setBounds(656, 366, 89, 23);
+		getContentPane().add(btnLimpar);
+
 		// uso da biblioteca Atxy2k para validações
 		RestrictedTextField nome = new RestrictedTextField(this.txtNomeCli);
 		nome.setLimit(50);
@@ -292,21 +301,12 @@ public class Clientes extends JDialog {
 		cidade.setLimit(50);
 		RestrictedTextField fone = new RestrictedTextField(this.txtFoneCli);
 		fone.setLimit(15);
-		
-		JButton btnLimpar = new JButton("Limpar");
-		btnLimpar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				limpar();
-			}
-		});
-		btnLimpar.setBounds(656, 366, 89, 23);
-		getContentPane().add(btnLimpar);
-		fone.setLimit(15);
+		fone.setOnlyNums(true);
 
 	}// end of the constructor
 
 	/**
-	 * buscarCep
+	 * Método para buscar o cep no webservise: republicavirtual.com.br
 	 */
 	private void buscarCep() {
 		String logradouro = "";
@@ -356,6 +356,9 @@ public class Clientes extends JDialog {
 	private JButton btnEditar;
 	private JButton btnExcluir;
 
+	/**
+	 * Método responsável por pesquisar o cliente no banco de dados
+	 */
 	private void pesquisarCliente() {
 		String read = "select idcli as ID, nome as Cliente, fone as Fone, cep as CEP, endereco as Endereço, numero as Número, complemento as Complemento, bairro as Bairro, cidade as Cidade, uf as UF from clientes where nome like ?";
 		try {
@@ -428,7 +431,7 @@ public class Clientes extends JDialog {
 	}// fim do método adicionarCliente()
 
 	/**
-	 * metodo e responsavel por setar os campos da tabela no formulario
+	 * Método e responsável por setar os campos da tabela no formulário
 	 */
 	private void setarCampos() {
 		// a linha abaixo obtem o conteudo da linha da tabela
@@ -452,7 +455,7 @@ public class Clientes extends JDialog {
 	}// fim do metodo setarCampos()
 
 	/**
-	 * metodo responsavel pela edicao dos dados do cliente
+	 * Método responsável por editar os dados do cliente no banco de dados
 	 */
 	private void editarCliente() {
 		// validação de campos obrigatórios
@@ -509,7 +512,10 @@ public class Clientes extends JDialog {
 		}
 
 	}// fim do metodo editarCliente()
-	
+
+	/**
+	 * Método responsável por excluir o cliente do banco de dados
+	 */
 	private void excluirCliente() {
 		// confimação de exclusão
 		int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste cliente?", "Atenção!",
@@ -528,8 +534,8 @@ public class Clientes extends JDialog {
 				}
 				con.close();
 			} catch (java.sql.SQLIntegrityConstraintViolationException ex) {
-				JOptionPane.showMessageDialog(null, "Exclusão não realizada.\nCliente possui serviço em aberto.", "Aviso",
-						JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Exclusão não realizada.\nCliente possui serviço em aberto.",
+						"Aviso", JOptionPane.WARNING_MESSAGE);
 			} catch (Exception e) {
 				System.out.println(e);
 			}
@@ -537,7 +543,7 @@ public class Clientes extends JDialog {
 	}// fim do método excluirCliente()
 
 	/**
-	 * Limpar os campos
+	 * Método responsável por zerar todos os campos
 	 */
 	private void limpar() {
 		// limpar campos
