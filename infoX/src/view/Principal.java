@@ -55,7 +55,8 @@ public class Principal extends JFrame {
 		JButton btnUsuarios = new JButton("");
 		btnUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				Usuarios usuarios = new Usuarios();
+				usuarios.setVisible(true);
 			}
 		});
 		btnUsuarios.setBounds(38, 32, 128, 128);
@@ -77,6 +78,12 @@ public class Principal extends JFrame {
 		contentPane.add(btnClientes);
 		
 		JButton btnOs = new JButton("");
+		btnOs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Servico servico = new Servico();
+				servico.setVisible(true);
+			}
+		});
 		btnOs.setBounds(38, 202, 128, 128);
 		btnOs.setToolTipText("OS");
 		btnOs.setIcon(new ImageIcon(Principal.class.getResource("/img/os.png")));

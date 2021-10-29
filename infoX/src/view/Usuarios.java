@@ -33,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 @SuppressWarnings("serial")
 public class Usuarios extends JDialog {
@@ -59,14 +60,12 @@ public class Usuarios extends JDialog {
 	 * Create the dialog.
 	 */
 	public Usuarios() {
-		setBounds(100, 100, 604, 357);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Usuarios.class.getResource("/img/pc.png")));
+		setTitle("Cadastrar usu\u00E1rios");
+		setModal(true);
+		setResizable(false);
+		setBounds(150, 150, 604, 357);
 		getContentPane().setLayout(null);
-
-		JLabel lblNewLabel = new JLabel("* Campos obrigat\u00F3rios");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel.setForeground(Color.RED);
-		lblNewLabel.setBounds(436, 23, 142, 14);
-		getContentPane().add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setIcon(new ImageIcon(Usuarios.class.getResource("/img/pesquisar.png")));
@@ -169,7 +168,7 @@ public class Usuarios extends JDialog {
 		btnExcluir = new JButton("");
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				excluirCliente();
+				excluirUsuario();
 			}
 		});
 		btnExcluir.setEnabled(false);
@@ -362,9 +361,9 @@ public class Usuarios extends JDialog {
 			}
 		}
 
-	}// fim do metodo editarCliente()
+	}// fim do metodo editarUsuario();
 
-	private void excluirCliente() {
+	private void excluirUsuario() {
 		// confimação de exclusão
 		int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclusão deste usuário?", "Atenção!",
 				JOptionPane.YES_NO_OPTION);
@@ -388,7 +387,7 @@ public class Usuarios extends JDialog {
 				System.out.println(e);
 			}
 		}
-	}// fim do método excluirCliente()
+	}// fim do método excluirUsuario();
 
 	/**
 	 * metodo responsavel por limpar os campos e gerenciar os botoes

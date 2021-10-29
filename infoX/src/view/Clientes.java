@@ -291,7 +291,8 @@ public class Clientes extends JDialog {
 		RestrictedTextField cidade = new RestrictedTextField(this.txtCidade);
 		cidade.setLimit(50);
 		RestrictedTextField fone = new RestrictedTextField(this.txtFoneCli);
-
+		fone.setLimit(15);
+		
 		JButton btnLimpar = new JButton("Limpar");
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
