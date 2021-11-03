@@ -11,20 +11,25 @@ import model.DAO;
 
 import java.awt.Toolkit;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class Login extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtUsuario;
+	private JTextField txtLogin;
 	private JPasswordField txtSenha;
 	private JLabel lblStatus;
 
@@ -64,7 +69,7 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Usu\u00E1rio");
+		JLabel lblNewLabel = new JLabel("Login");
 		lblNewLabel.setBounds(45, 30, 48, 14);
 		contentPane.add(lblNewLabel);
 
@@ -72,16 +77,21 @@ public class Login extends JFrame {
 		lblNewLabel_1.setBounds(45, 70, 46, 14);
 		contentPane.add(lblNewLabel_1);
 
-		txtUsuario = new JTextField();
-		txtUsuario.setBounds(103, 27, 220, 20);
-		contentPane.add(txtUsuario);
-		txtUsuario.setColumns(10);
+		txtLogin = new JTextField();
+		txtLogin.setBounds(103, 27, 220, 20);
+		contentPane.add(txtLogin);
+		txtLogin.setColumns(10);
 
 		txtSenha = new JPasswordField();
 		txtSenha.setBounds(103, 67, 220, 20);
 		contentPane.add(txtSenha);
 
 		JButton btnEntrar = new JButton("Entrar");
+		btnEntrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				logar();
+			}
+		});
 		btnEntrar.setBounds(45, 130, 89, 23);
 		contentPane.add(btnEntrar);
 
@@ -115,6 +125,44 @@ public class Login extends JFrame {
 			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
+		}
+	}
+	
+	DAO dao = new DAO();
+	/**
+	 * Método responsável pela autenticação do usuário
+	 */
+	private void logar() {
+		if (txtLogin.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Login", "Atenção!", JOptionPane.WARNING_MESSAGE);
+		} else if (txtSenha.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Senha", "Atenção!", JOptionPane.WARNING_MESSAGE);
+		} else {
+			try {
+				String read = "select * from usuarios where login=? and senha=md5(?)";
+				Connection con = dao.conectar();
+				PreparedStatement pst = con.prepareStatement(read);
+				pst.setString(1, txtLogin.getText());
+				pst.setString(2, txtSenha.getText());
+				// a linha abaixo executa a query(instrução SQL) armazenando o resultado no
+				// objeto rs
+				ResultSet rs = pst.executeQuery();
+				// se existir o login e senha correspondente
+				if (rs.next()) {
+					// ir para a área do usuário
+					Principal principal = new Principal();
+					principal.setVisible(true);
+					// finalizar o JFrame
+					this.dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Usuario e/ou senha inválido(s)", "Atenção!",
+							JOptionPane.WARNING_MESSAGE);
+				}
+				con.close();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+
 		}
 	}
 }
