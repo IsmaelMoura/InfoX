@@ -135,8 +135,10 @@ public class Login extends JFrame {
 	private void logar() {
 		if (txtLogin.getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Preencha o campo Login", "Atenção!", JOptionPane.WARNING_MESSAGE);
+			txtLogin.requestFocus();
 		} else if (txtSenha.getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Preencha o campo Senha", "Atenção!", JOptionPane.WARNING_MESSAGE);
+			txtSenha.requestFocus();
 		} else {
 			try {
 				String read = "select * from usuarios where login=? and senha=md5(?)";
@@ -149,13 +151,27 @@ public class Login extends JFrame {
 				ResultSet rs = pst.executeQuery();
 				// se existir o login e senha correspondente
 				if (rs.next()) {
-					// ir para a área do usuário
-					Principal principal = new Principal();
-					principal.setVisible(true);
-					// finalizar o JFrame
-					this.dispose();
+					// capturar o perfil do usuário
+					String perfil = rs.getString(5);
+					//System.out.println(perfil);
+
+					// tratamento de perfil de usuário					
+					if (perfil.equals("administrador")) {
+						Principal principal = new Principal();
+						principal.setVisible(true);
+						// liberar os botões
+						principal.btnRelatorios.setEnabled(true);
+						principal.btnUsuarios.setEnabled(true);
+						// finalizar o JFrame
+						this.dispose();
+					} else {
+						Principal principal = new Principal();
+						principal.setVisible(true);
+						// finalizar o JFrame
+						this.dispose();
+					}				
 				} else {
-					JOptionPane.showMessageDialog(null, "Usuario e/ou senha inválido(s)", "Atenção!",
+					JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido(s)", "Atenção!",
 							JOptionPane.WARNING_MESSAGE);
 				}
 				con.close();

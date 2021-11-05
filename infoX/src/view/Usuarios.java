@@ -34,6 +34,9 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
+import javax.swing.JCheckBox;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @SuppressWarnings("serial")
 public class Usuarios extends JDialog {
@@ -60,11 +63,18 @@ public class Usuarios extends JDialog {
 	 * Create the dialog.
 	 */
 	public Usuarios() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// evento ativado ao iniciar o JDialog
+				chkSenha.setVisible(false);
+			}
+		});
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Usuarios.class.getResource("/img/pc.png")));
 		setTitle("Cadastrar usu\u00E1rios");
 		setModal(true);
 		setResizable(false);
-		setBounds(150, 150, 604, 357);
+		setBounds(150, 150, 604, 410);
 		getContentPane().setLayout(null);
 
 		JLabel lblNewLabel_1 = new JLabel("");
@@ -150,19 +160,24 @@ public class Usuarios extends JDialog {
 		});
 		btnAdicionar.setToolTipText("Adicionar");
 		btnAdicionar.setIcon(new ImageIcon(Usuarios.class.getResource("/img/create.png")));
-		btnAdicionar.setBounds(20, 237, 70, 70);
+		btnAdicionar.setBounds(20, 290, 70, 70);
 		getContentPane().add(btnAdicionar);
 
 		btnEditar = new JButton("");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				editarUsuario();
+				// tratamento do checkbox(senha do usuário)
+				if (chkSenha.isSelected()) {
+					editarUsuario();
+				} else {
+					editarUsuarioPersonalizado();
+				}
 			}
 		});
 		btnEditar.setEnabled(false);
 		btnEditar.setToolTipText("Editar");
 		btnEditar.setIcon(new ImageIcon(Usuarios.class.getResource("/img/update.png")));
-		btnEditar.setBounds(100, 237, 70, 70);
+		btnEditar.setBounds(100, 290, 70, 70);
 		getContentPane().add(btnEditar);
 
 		btnExcluir = new JButton("");
@@ -174,7 +189,7 @@ public class Usuarios extends JDialog {
 		btnExcluir.setEnabled(false);
 		btnExcluir.setIcon(new ImageIcon(Usuarios.class.getResource("/img/delete.png")));
 		btnExcluir.setToolTipText("Excluir");
-		btnExcluir.setBounds(180, 237, 70, 70);
+		btnExcluir.setBounds(180, 290, 70, 70);
 		getContentPane().add(btnExcluir);
 
 		txtSenha = new JPasswordField();
@@ -196,6 +211,10 @@ public class Usuarios extends JDialog {
 		RestrictedTextField login = new RestrictedTextField(txtLogin);
 		login.setLimit(50);
 		RestrictedTextField senha = new RestrictedTextField(txtSenha);
+		
+		chkSenha = new JCheckBox("Confirmar altera\u00E7\u00E3o de senha");
+		chkSenha.setBounds(242, 225, 227, 23);
+		getContentPane().add(chkSenha);
 		senha.setLimit(250);
 
 	}// end of the constructor
@@ -211,6 +230,7 @@ public class Usuarios extends JDialog {
 	private JPasswordField txtSenha;
 	private JLabel lblNewLabel_6;
 	private JComboBox cboPerfil;
+	private JCheckBox chkSenha;
 
 	private void pesquisarUsuario() {
 		String read = "select id as ID,usuario as Usuário,login as Login,perfil as Perfil from usuarios where usuario like ?";
@@ -237,10 +257,11 @@ public class Usuarios extends JDialog {
 		txtUsuario.setText(table.getModel().getValueAt(setar, 1).toString());
 		txtLogin.setText(table.getModel().getValueAt(setar, 2).toString());
 		cboPerfil.setSelectedItem(table.getModel().getValueAt(setar, 3).toString());
-		// gerenciar os botoes
+		// gerenciar os botoes e checkbox de senha
 		btnAdicionar.setEnabled(false);
 		btnEditar.setEnabled(true);
 		btnExcluir.setEnabled(true);
+		chkSenha.setVisible(true);
 	}// fim do metodo setarCampos()
 
 	/**
@@ -362,7 +383,57 @@ public class Usuarios extends JDialog {
 			}
 		}
 
-	}// fim do metodo editarUsuario();
+	}// fim do metodo editarUsuario()
+	
+
+	/**
+	 * Método responsável por editar os dados do cliente no banco de dados exceto a senha
+	 */
+	private void editarUsuarioPersonalizado() {
+		// validação de campos obrigatórios
+		if (txtUsuario.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Usuário", "Aviso", JOptionPane.WARNING_MESSAGE);
+			txtUsuario.requestFocus();
+		} else if (cboPerfil.getSelectedItem().equals("")) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Perfil", "Aviso", JOptionPane.WARNING_MESSAGE);
+			cboPerfil.requestFocus();
+		} else if (txtLogin.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Login", "Aviso", JOptionPane.WARNING_MESSAGE);
+			txtLogin.requestFocus();
+		} else if (txtSenha.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Preencha o campo Senha", "Aviso", JOptionPane.WARNING_MESSAGE);
+			txtSenha.requestFocus();
+		} else {
+			// editar o usuario do banco
+			String update = "update usuarios set usuario=?,login=?,perfil=? where id=?";
+			try {
+				Connection con = dao.conectar();
+				PreparedStatement pst = con.prepareStatement(update);
+				pst.setString(1, txtUsuario.getText());
+				pst.setString(2, txtLogin.getText());
+				pst.setString(3, cboPerfil.getSelectedItem().toString());
+				pst.setString(4, txtId.getText());
+
+				// criando uma variavel que irá executar a query e receber o valor 1 em caso
+				// positivo (edicao do usuario no banco)
+				int confirma = pst.executeUpdate();
+				if (confirma == 1) {
+					JOptionPane.showMessageDialog(null, "Usuário editado com sucesso", "Mensagem",
+							JOptionPane.INFORMATION_MESSAGE);
+					con.close();
+					limpar();
+				}
+			} catch (java.sql.SQLIntegrityConstraintViolationException ex) {
+				JOptionPane.showMessageDialog(null, "Edição não realizada.\nLogin já existente", "Aviso",
+						JOptionPane.WARNING_MESSAGE);
+				txtLogin.setText(null);
+				txtLogin.requestFocus();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+
+	}// fim do metodo editarUsuarioPersonalizado()
 
 	private void excluirUsuario() {
 		// confimação de exclusão
@@ -407,5 +478,6 @@ public class Usuarios extends JDialog {
 		btnAdicionar.setEnabled(true);
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
+		chkSenha.setVisible(false);
 	}// fim do metodo limpar()
 }

@@ -20,6 +20,9 @@ import java.awt.Cursor;
 public class Principal extends JFrame {
 
 	private JPanel contentPane;
+	// modificar de private para public para ser visivel a outras classes
+	public JButton btnUsuarios;
+	public JButton btnRelatorios;
 
 	/**
 	 * Launch the application.
@@ -52,7 +55,8 @@ public class Principal extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnUsuarios = new JButton("");
+		btnUsuarios = new JButton("");
+		btnUsuarios.setEnabled(false);
 		btnUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Usuarios usuarios = new Usuarios();
@@ -108,5 +112,12 @@ public class Principal extends JFrame {
 		btnSobre.setToolTipText("Sobre");
 		btnSobre.setIcon(new ImageIcon(Principal.class.getResource("/img/about.png")));
 		contentPane.add(btnSobre);
+		
+		btnRelatorios = new JButton("");
+		btnRelatorios.setEnabled(false);
+		btnRelatorios.setIcon(new ImageIcon(Principal.class.getResource("/img/relatorios.png")));
+		btnRelatorios.setToolTipText("Relat\u00F3rios");
+		btnRelatorios.setBounds(198, 202, 128, 128);
+		contentPane.add(btnRelatorios);
 	}
 }
