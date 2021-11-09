@@ -563,5 +563,5 @@ public class Clientes extends JDialog {
 		btnAdicionar.setEnabled(true);
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
-	}
+	}// fim do método limpar()
 }

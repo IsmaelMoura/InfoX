@@ -43,7 +43,7 @@ public class Servico extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtPesquisar;
 	private JTable table;
-	// vari·vel de apoio ao uso do checkbox
+	// vari√°vel de apoio ao uso do checkbox
 	private String tipo;
 
 	/**
@@ -145,7 +145,7 @@ public class Servico extends JDialog {
 		chkOrcamento = new JCheckBox("Or\u00E7amento");
 		chkOrcamento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tipo = "OrÁamento";
+				tipo = "Or√ßamento";
 			}
 		});
 		buttonGroup.add(chkOrcamento);
@@ -156,7 +156,7 @@ public class Servico extends JDialog {
 		chkServico = new JCheckBox("Servi\u00E7o");
 		chkServico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tipo = "ServiÁo";
+				tipo = "Servi√ßo";
 			}
 		});
 		buttonGroup.add(chkServico);
@@ -252,6 +252,11 @@ public class Servico extends JDialog {
 		contentPanel.add(btnEditar);
 
 		btnExcluir = new JButton("");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				excluirOs();
+			}
+		});
 		btnExcluir.setEnabled(false);
 		btnExcluir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExcluir.setIcon(new ImageIcon(Servico.class.getResource("/img/delete.png")));
@@ -263,13 +268,12 @@ public class Servico extends JDialog {
 		btnImprimir.setIcon(new ImageIcon(Servico.class.getResource("/img/print.png")));
 		btnImprimir.setBounds(340, 384, 70, 70);
 		contentPanel.add(btnImprimir);
-		
+
 		txtTotal = new JTextField();
 		txtTotal.setBounds(416, 92, 86, 20);
 		panel_1.add(txtTotal);
 		txtTotal.setColumns(10);
-		
-		
+
 		btnLimpar = new JButton("Limpar");
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -278,14 +282,14 @@ public class Servico extends JDialog {
 		});
 		btnLimpar.setBounds(777, 431, 89, 23);
 		contentPanel.add(btnLimpar);
-		
+
 		RestrictedTextField equipamento = new RestrictedTextField(txtEquipamento);
 		equipamento.setLimit(200);
 		RestrictedTextField defeito = new RestrictedTextField(txtDefeito);
 		defeito.setLimit(200);
 		RestrictedTextField tecnico = new RestrictedTextField(txtTecnico);
 		tecnico.setLimit(50);
-		
+
 	}// fim do construtor
 
 	DAO dao = new DAO();
@@ -308,7 +312,7 @@ public class Servico extends JDialog {
 	private JTextField txtTotal;
 
 	/**
-	 * MÈtodo respons·vel por pesquisar o cliente no banco dedos
+	 * M√©todo respons√°vel por pesquisar o cliente no banco dedos
 	 */
 	private void pesquisarCliente() {
 		String read = "select idcli as ID, nome as Cliente, fone as Fone  from clientes where nome like ?";
@@ -318,14 +322,14 @@ public class Servico extends JDialog {
 			pst.setString(1, txtPesquisar.getText() + "%");
 			ResultSet rs = pst.executeQuery();
 			table.setModel(DbUtils.resultSetToTableModel(rs));
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}// end of the pesquisarCliente()
 
 	/**
-	 * MÈtodo e respons·vel por setar os campos da tabela no formulario
+	 * M√©todo e respons√°vel por setar os campos da tabela no formulario
 	 */
 	private void setarCampos() {
 		// a linha abaixo obtem o conteudo da linha da tabela
@@ -336,11 +340,11 @@ public class Servico extends JDialog {
 	}// fim do metodo setarCampos()
 
 	/**
-	 * MÈtodo respons·vel pela pesquisa da OS
+	 * M√©todo respons√°vel pela pesquisa da OS
 	 */
 	private void pesquisarOs() {
-		// tÈcnica usada para capturar o n˙mero da OS
-		String numOs = JOptionPane.showInputDialog("N˙mero da OS");
+		// t√©cnica usada para capturar o n√∫mero da OS
+		String numOs = JOptionPane.showInputDialog("N√∫mero da OS");
 		String read = "select * from tbos where os=" + numOs;
 		try {
 			Connection con = dao.conectar();
@@ -350,7 +354,7 @@ public class Servico extends JDialog {
 				txtId.setText(rs.getString(9));
 				txtOs.setText(rs.getString(1));
 				txtDataOs.setText(rs.getString(2));
-				if (rs.getString(3).equals("OrÁamento")) {
+				if (rs.getString(3).equals("Or√ßamento")) {
 					chkOrcamento.setSelected(true);
 				} else {
 					chkServico.setSelected(true);
@@ -364,35 +368,35 @@ public class Servico extends JDialog {
 				btnEditar.setEnabled(true);
 				btnExcluir.setEnabled(true);
 			} else {
-				JOptionPane.showMessageDialog(null, "N˙mero de OS n„o existe", "AtenÁ„o !",
+				JOptionPane.showMessageDialog(null, "N√∫mero de OS n√£o existe", "Aten√ß√£o !",
 						JOptionPane.WARNING_MESSAGE);
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-	}// fim do mÈtodo pesquisarOs()
+	}// fim do m√©todo pesquisarOs()
 
 	/*
-	 * MÈtodo respons·vel por emitir uma nova OS(inserir OS)
+	 * M√©todo respons√°vel por emitir uma nova OS(inserir OS)
 	 */
 	private void emitirOs() {
-		// validaÁ„o
+		// valida√ß√£o
 		if (txtId.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha ID do cliente", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Preencha ID do cliente", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			txtId.requestFocus();
 		} else if (tipo == null) {
-			JOptionPane.showMessageDialog(null, "Selecione o tipo de OS", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Selecione o tipo de OS", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			chkOrcamento.requestFocus();
 		} else if (cboStatus.getSelectedItem().equals("")) {
-			JOptionPane.showMessageDialog(null, "Selecione qual o status da OS", "AtenÁ„o !",
+			JOptionPane.showMessageDialog(null, "Selecione qual o status da OS", "Aten√ß√£o !",
 					JOptionPane.WARNING_MESSAGE);
 			cboStatus.requestFocus();
 		} else if (txtEquipamento.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha o campo Equipamento", "AtenÁ„o !",
+			JOptionPane.showMessageDialog(null, "Preencha o campo Equipamento", "Aten√ß√£o !",
 					JOptionPane.WARNING_MESSAGE);
 			txtEquipamento.requestFocus();
 		} else if (txtDefeito.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha o campo Defeito", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Preencha o campo Defeito", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			chkOrcamento.requestFocus();
 		} else {
 			String create = "insert into tbos (tipo,statusos,equipamento,defeito,tecnico,valor,idcli) values (?,?,?,?,?,?,?)";
@@ -407,11 +411,11 @@ public class Servico extends JDialog {
 				pst.setString(6, txtTotal.getText());
 				pst.setString(7, txtId.getText());
 
-				// criando uma variavel que ir· executar a query e receber o valor 1 em caso
-				// positivo (inserÁ„o do cliente no banco)
+				// criando uma variavel que ir√° executar a query e receber o valor 1 em caso
+				// positivo (inser√ß√£o do cliente no banco)
 				int confirma = pst.executeUpdate();
 				if (confirma == 1) {
-					JOptionPane.showMessageDialog(null, "OS emitida com sucessor", "Mensagem",
+					JOptionPane.showMessageDialog(null, "OS emitida com sucesso", "Mensagem",
 							JOptionPane.INFORMATION_MESSAGE);
 					con.close();
 					limpar();
@@ -420,29 +424,29 @@ public class Servico extends JDialog {
 				System.out.println(e);
 			}
 		}
-	}// fim do mÈtodo emitirOs()
+	}// fim do m√©todo emitirOs()
 
 	/**
-	 * MÈtodo respons·vel por editar os dados da OS no banco de dados
+	 * M√©todo respons√°vel por editar os dados da OS no banco de dados
 	 */
 	private void editarOs() {
-		// validaÁ„o
+		// valida√ß√£o
 		if (txtId.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha ID do cliente", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Preencha ID do cliente", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			txtId.requestFocus();
 		} else if (tipo == null) {
-			JOptionPane.showMessageDialog(null, "Selecione o tipo de OS", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Selecione o tipo de OS", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			chkOrcamento.requestFocus();
 		} else if (cboStatus.getSelectedItem().equals("")) {
-			JOptionPane.showMessageDialog(null, "Selecione qual o status da OS", "AtenÁ„o !",
+			JOptionPane.showMessageDialog(null, "Selecione qual o status da OS", "Aten√ß√£o !",
 					JOptionPane.WARNING_MESSAGE);
 			cboStatus.requestFocus();
 		} else if (txtEquipamento.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha o campo Equipamento", "AtenÁ„o !",
+			JOptionPane.showMessageDialog(null, "Preencha o campo Equipamento", "Aten√ß√£o !",
 					JOptionPane.WARNING_MESSAGE);
 			txtEquipamento.requestFocus();
 		} else if (txtDefeito.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Preencha o campo Defeito", "AtenÁ„o !", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Preencha o campo Defeito", "Aten√ß√£o !", JOptionPane.WARNING_MESSAGE);
 			chkOrcamento.requestFocus();
 		} else {
 			// editar os dados da OS no banco de dados
@@ -458,8 +462,8 @@ public class Servico extends JDialog {
 				pst.setString(6, txtTotal.getText());
 				pst.setString(7, txtOs.getText());
 
-				// criando uma variavel que ir· executar a query e receber o valor 1 em caso
-				// positivo (ediÁ„o da OS no banco de dados)
+				// criando uma variavel que ir√° executar a query e receber o valor 1 em caso
+				// positivo (edi√ß√£o da OS no banco de dados)
 				int confirma = pst.executeUpdate();
 				if (confirma == 1) {
 					JOptionPane.showMessageDialog(null, "OS editada com sucesso", "Mensagem",
@@ -475,7 +479,33 @@ public class Servico extends JDialog {
 	}// fim do metodo editarOs()
 
 	/**
-	 * MÈtodo respons·vel por zerar todos os campos
+	 * M√©todo respons√°vel por excluir a OS do banco de dados
+	 */
+	private void excluirOs() {
+		// confima√ß√£o de exclus√£o
+		int confirma = JOptionPane.showConfirmDialog(null, "Confirma a exclus√£o desta OS?", "Aten√ß√£o!",
+				JOptionPane.YES_NO_OPTION);
+		if (confirma == JOptionPane.YES_OPTION) {
+			String delete = "delete from tbos where os=?";
+			try {
+				Connection con = dao.conectar();
+				PreparedStatement pst = con.prepareStatement(delete);
+				pst.setString(1, txtOs.getText());
+				int excluir = pst.executeUpdate();
+				if (excluir == 1) {
+					limpar();
+					JOptionPane.showMessageDialog(null, "OS exclu√≠da com sucesso", "Mensagem",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				con.close();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+	}// fim do m√©todo excluirOs()
+
+	/**
+	 * M√©todo respons√°vel por zerar todos os campos
 	 */
 	private void limpar() {
 		// limpar campos
@@ -483,8 +513,8 @@ public class Servico extends JDialog {
 		txtId.setText(null);
 		txtOs.setText(null);
 		txtDataOs.setText(null);
-		chkOrcamento.setSelected(false);
-		chkOrcamento.setSelected(false);
+		// tirar sele√ß√£o do checkbox
+		buttonGroup.clearSelection();
 		cboStatus.setSelectedItem(null);
 		txtEquipamento.setText(null);
 		txtDefeito.setText(null);
@@ -495,5 +525,6 @@ public class Servico extends JDialog {
 		btnAdicionar.setEnabled(true);
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
-	}// fim do mÈtodo limpar()
+		tipo = null;
+	}// fim do m√©todo limpar()
 }
