@@ -556,7 +556,7 @@ public class Clientes extends JDialog {
 		txtComplemento.setText(null);
 		txtBairro.setText(null);
 		txtCidade.setText(null);
-		cboUf.setSelectedItem(null);
+		cboUf.setSelectedItem("");
 		txtFoneCli.setText(null);
 		// limpar tabela
 		((DefaultTableModel) table.getModel()).setRowCount(0);

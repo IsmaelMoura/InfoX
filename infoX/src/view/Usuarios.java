@@ -471,7 +471,7 @@ public class Usuarios extends JDialog {
 		txtUsuario.setText(null);
 		txtLogin.setText(null);
 		txtSenha.setText(null);
-		cboPerfil.setSelectedItem(null);
+		cboPerfil.setSelectedItem("");
 		// limpar tabela
 		((DefaultTableModel) table.getModel()).setRowCount(0);
 		// gerenciar botoes

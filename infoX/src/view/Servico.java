@@ -515,7 +515,7 @@ public class Servico extends JDialog {
 		txtDataOs.setText(null);
 		// tirar seleção do checkbox
 		buttonGroup.clearSelection();
-		cboStatus.setSelectedItem(null);
+		cboStatus.setSelectedItem("");
 		txtEquipamento.setText(null);
 		txtDefeito.setText(null);
 		txtTecnico.setText(null);
