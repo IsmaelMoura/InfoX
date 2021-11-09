@@ -92,6 +92,7 @@ values ('serviço','retirado','Notebook Acer','Vírus','Ramiro',350.00,4);
 insert into tbos (tipo,statusos,equipamento,defeito,tecnico,valor,idcli)
 values ('orçamento','aguardando aprovação','Notebook Razer 17 Polegadas','Superaquecimento','Ramiro',750.00,5);
 
+select * from tbos where os='4';
 select * from tbos;
 
 -- (inner join) união de tabelas relacionadas para consultas e updates
